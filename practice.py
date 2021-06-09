@@ -11,8 +11,6 @@ def summ(n,m):
     res = []
     dfs(0,m,res,[])
     return res
-# test = summ(5,3)
-# print(test)
 
 
 def permute(nums):
@@ -196,26 +194,46 @@ def maxsubarray(nums):
       res = max(res,tmp)
     return res
 
-    def maxSubarraySumCircular(nums):
-        n = len(nums)
-        maxq = float('-inf')
-        # 无环
-        pre = 0
+def maxSubarraySumCircular(nums):
+    n = len(nums)
+    maxq = float('-inf')
+    # 无环
+    pre = 0
+    for i in range(n):
+        pre = max(0, pre) + nums[i]
+        maxq = max(maxq, pre)
+    if maxq < 0: return maxq
+    # 有环
+    minp = float('inf')
+    for i in range(n):
+        pre = min(0, pre) + nums[i]
+        minp = min(minp, pre)
+
+    return max(maxq, sum(nums) - minp)
+
+def subarray(nums):
+    n = len(nums)
+    visted = [False for _ in range(n)]
+    def dfs(depth,nums,visted,res,path):
+        if depth == n:
+            res.append(path[:])
+            return res
         for i in range(n):
-            pre = max(0, pre) + nums[i]
-            maxq = max(maxq, pre)
-        if maxq < 0: return maxq
-        # 有环
-        minp = float('inf')
-        for i in range(n):
-            pre = min(0, pre) + nums[i]
-            minp = min(minp, pre)
-
-        return max(maxq, sum(nums) - minp)
-
-nums = [[1,3],[2,6],[7,8]]
-test = mergelist(nums)
-print(test)
-
+            if not visted[i]:
+                path.append(nums[i])
+                visted[i] = True
+                dfs(depth+1,nums,visted,res,path)
+                visted[i] = False
+                path.pop()
+    res = []
+    dfs(0,nums,visted,res,[])
+    return res
+while True:
+    try:
+        nums = list(map(int,input().split()))
+        test = subarray(nums)
+        print(test)
+    except:
+        break
 
 
